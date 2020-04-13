@@ -17,15 +17,27 @@ function! ruby_hl_lvar#redraw() abort
 	let nr = 1
 	let lastnr = winnr('$')
 	while nr <= lastnr
-		execute nr . "wincmd w"
-		call s:redraw_window()
+		try
+			execute nr . "wincmd w"
+			call s:redraw_window()
+		catch
+			echomsg 'Ignore cmdwin'
+		endtry
 		let nr += 1
 	endwhile
 
 	if prevwinnr > 0
-		execute prevwinnr . "wincmd w"
+		try
+			execute prevwinnr . "wincmd w"
+		catch
+			echomsg 'Ignore cmdwin'
+		endtry
 	endif
-	execute curwinnr . "wincmd w"
+	try
+		execute curwinnr . "wincmd w"
+	catch
+		echomsg 'Ignore cmdwin'
+	endtry
 endfunction
 
 function! s:redraw_window()
@@ -164,4 +176,3 @@ function! ruby_hl_lvar#update_match_pattern(buffer) abort
 	let s:hl_version += 1
 	let b:ruby_hl_lvar_hl_version = s:hl_version
 endfunction
-
